@@ -1,0 +1,36 @@
+<project name="GeoPuzzle" default="package" basedir=".">
+
+	<taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"/>
+
+	<property name="plugin.name"      value="GeoPuzzle"/>
+	<property name="plugin.version"   value="1.0.0"/>
+	<stringutil string="${plugin.name}" property="plugin.filename">
+		<lowercase/>
+	</stringutil>
+
+
+	<target name="package" depends="versions" description="Package the plugin into a GIP package file">
+		<zip destfile="${plugin.filename}-${plugin.version}.gip" basedir="." includes="${plugin.name}/*" />
+	</target>
+
+	<target name="versions" description="Update the version number in the source files">
+		<!-- <buildnumber/> -->
+
+		<tstamp>
+			<format property="package.date" pattern="yyyy-MM-dd" />
+		</tstamp>
+
+		<echo message="Updating version numbers"/>
+		<echo message="${plugin.name} ${plugin.version}"/>
+		<echo message="Package date: ${package.date}"/>
+
+		<!-- Update the meta.ini file -->
+		<replaceregexp file="${plugin.name}/${plugin.name}.meta.ini" match='version=\d+\.\d+\.\d+' replace='version=${plugin.version}'></replaceregexp>
+		<replaceregexp file="${plugin.name}/${plugin.name}.meta.ini" match='datum balickovania: \d{4}-\d{2}-\d{2}' replace='datum balickovania: ${package.date}'></replaceregexp>
+
+		<!-- Update the main plugin file -->
+		<replaceregexp file="${plugin.name}/${plugin.name}.ggp.pas" match="const VERSION = '\d+\.\d+\.\d+';" replace="const VERSION = '${plugin.version}';"></replaceregexp>
+		<replaceregexp file="${plugin.name}/${plugin.name}.ggp.pas" match="Verzia: \d+\.\d+\.\d+ / \d{4}-\d{2}-\d{2}" replace="Verzia: ${plugin.version} / ${package.date}"></replaceregexp>
+	</target>
+
+</project>
