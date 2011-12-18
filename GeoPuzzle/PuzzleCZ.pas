@@ -95,7 +95,7 @@ begin
   names[34] := 'Kunìtická hora (307 m n. m.)';
   names[35] := 'Velká Èantoryje (995 m n. m.)';
 
-  GeneratePuzzle(flags_CZKopecky, names, GEOGET_SCRIPTDIR + OUT_CZKOPECKY, 'puzzlenew', backgroundKopceky);
+  GeneratePuzzle(flags_CZKopecky, names, GEOGET_SCRIPTDIR + OUT_CZKOPECKY, 'puzzlenew', backgroundGlobal);
 end;
 
 

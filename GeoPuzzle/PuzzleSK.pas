@@ -114,7 +114,7 @@ begin
   names[34] := 'Vihorlat (1076 m n. m.)';
   names[35] := 'Kremenec (1221 m n. m.)';
 
-  GeneratePuzzle(flags_SKKopceky, names, GEOGET_SCRIPTDIR + OUT_SKKOPCEKY, 'kopecky-sk', backgroundKopceky);
+  GeneratePuzzle(flags_SKKopceky, names, GEOGET_SCRIPTDIR + OUT_SKKOPCEKY, 'kopecky-sk', backgroundGlobal);
 end;
 
 

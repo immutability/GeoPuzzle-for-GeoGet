@@ -26,7 +26,6 @@ type
 var
   cnt : integer;
   backgroundGlobal : String; // hlavne pozadie, podla konfiguracie
-  backgroundKopceky : String; // pozadie iba pre kopceky (podporuju viac pozadi)
   useUtfOutput : boolean; // false = ANSI / Windows-1250, true = UTF-8
   flags_SKKopceky : TBits;
   flags_SKHrady : TBits;
@@ -164,12 +163,10 @@ begin
   if (backgroundIndex < 1) or (backgroundIndex > 9) then 
     backgroundIndex := 2;
     
-  // nastav pozadie pre kopceky (podporuju plnu sadu pozadi od 1 po 9)  
-  backgroundKopceky := IntToStr(backgroundIndex);
-
-  // nastav pozadie pre ostatne puzzle (podporuju len 2, 4, 6, 8 a 9)
+  // nastav pozadie (od verze 2.0 podporovane iba 2, 4, 6, 8 a 9)
   if (backgroundIndex = 1) or (backgroundIndex = 3) or (backgroundIndex = 5) or (backgroundIndex = 7) then
     Inc(backgroundIndex);
+
   backgroundGlobal := IntToStr(backgroundIndex);
 
   // kontrola nastavenia vystupneho kodovania
