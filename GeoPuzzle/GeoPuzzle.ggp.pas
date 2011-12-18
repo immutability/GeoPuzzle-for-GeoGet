@@ -4,13 +4,13 @@ http://tiny.cc/osnica
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 1.0.1 / 2011-12-14
+Verzia: 1.0.2 / 2011-12-18
 }
 
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '1.0.1';
+const VERSION = '1.0.2';
 
 // nazvy generovanych HTML suborov s jednotlivymi puzzle
 const OUT_SKKOPCEKY = '\GeoPuzzle\GeoPuzzle_SKKopceky.html';
@@ -18,6 +18,7 @@ const OUT_SKHRADY = '\GeoPuzzle\GeoPuzzle_SKHrady.html';
 const OUT_SKKOSTOLIKY = '\GeoPuzzle\GeoPuzzle_SKKostoliky.html';
 const OUT_CZKOPECKY = '\GeoPuzzle\GeoPuzzle_CZKopecky.html';
 const OUT_CZHRADY = '\GeoPuzzle\GeoPuzzle_CZHrady.html';
+const OUT_CZKOSTELIKY = '\GeoPuzzle\GeoPuzzle_CZKosteliky.html';
 const OUT_CZREKORDY = '\GeoPuzzle\GeoPuzzle_CZRekordy.html';
 
 type
@@ -32,6 +33,7 @@ var
   flags_SKKostoliky : TBits;
   flags_CZKopecky : TBits;
   flags_CZHrady : TBits;
+  flags_CZKosteliky : TBits;
   flags_CZRekordy : TBits;
 
 
@@ -148,6 +150,7 @@ begin
   flags_SKKostoliky := InitFlagBits();
   flags_CZKopecky := InitFlagBits();
   flags_CZHrady := InitFlagBits();
+  flags_CZKosteliky := InitFlagBits();
   flags_CZRekordy := InitFlagBits();
 
   // reset pocitadla
@@ -192,6 +195,7 @@ begin
     ProcessSKKostoliky(GC);
     ProcessCZKopecky(GC);
     ProcessCZHrady(GC);
+    ProcessCZKosteliky(GC);
     ProcessCZRekordy(GC);
   end;
 
@@ -208,5 +212,6 @@ begin
   GenerateSKKostoliky();
   GenerateCZKopecky();
   GenerateCZHrady();
+  GenerateCZKosteliky();
   GenerateCZRekordy();
 end;
