@@ -189,7 +189,7 @@ end;
 
 procedure PluginWork;
 begin
-  if GC.IsFound then begin
+  if (GC.IsFound) or (GC.IsOwner) then begin
     ProcessSKKopceky(GC);
     ProcessSKHrady(GC);
     ProcessSKKostoliky(GC);
