@@ -221,9 +221,9 @@ begin
     'GC129AJ' : flags_CZKosteliky.Bits[21] := true;
     // TODO tento kostolik este nema kes
     'GC1T1EH' : flags_CZKosteliky.Bits[23] := true;
-    // TODO tento kostolik este nema kes
+    'GC2D81Y' : flags_CZKosteliky.Bits[24] := true;
     'GC1F9EQ' : flags_CZKosteliky.Bits[25] := true;
-    // TODO tento kostolik este nema kes
+    'GC13K7C' : flags_CZKosteliky.Bits[26] := true;
     // TODO tento kostolik este nema kes
     'GCKD3N' : flags_CZKosteliky.Bits[28] := true;
     'GC26BME' : flags_CZKosteliky.Bits[29] := true;
@@ -234,6 +234,7 @@ begin
     'GC1ANGZ' : flags_CZKosteliky.Bits[33] := true;
     'GC19NWD' : flags_CZKosteliky.Bits[34] := true;
     'GC2ARDK' : flags_CZKosteliky.Bits[35] := true;
+    'GCVBWE' : flags_CZKosteliky.Bits[35] := true;
   end;
 end;
 
