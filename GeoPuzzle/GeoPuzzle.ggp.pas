@@ -214,4 +214,17 @@ begin
   GenerateCZHrady();
   GenerateCZKosteliky();
   GenerateCZRekordy();
+
+  if SILENT = '0' then begin
+    ShowHTMLMessage(PluginCaption(), 
+      'Vaše GeoPuzzles byly úspìšnì vytvoøeny:<br><br>' +
+      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZKOPECKY + '">Èeské kopeèky</a><br>' +
+      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_SKKOPCEKY + '">Slovenské kopèeky</a><br>' +
+      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZHRADY + '">Èeské hrady</a><br>' +
+      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_SKHRADY + '">Slovenské hrady</a><br>' +
+      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZKOSTELIKY + '">Døevìné kostelíky</a><br>' +
+      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_SKKOSTOLIKY + '">Drevené kostolíky Slovenska</a><br>' +
+      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZREKORDY + '">Èeské rekordy</a><br>'
+      );
+  end;
 end;
