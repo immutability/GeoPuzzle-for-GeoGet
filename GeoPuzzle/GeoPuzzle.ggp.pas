@@ -4,13 +4,13 @@ http://tiny.cc/osnica
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 1.0.2 / 2011-12-18
+Verzia: 1.0.3 / 2011-12-23
 }
 
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '1.0.2';
+const VERSION = '1.0.3';
 
 // nazvy generovanych HTML suborov s jednotlivymi puzzle
 const OUT_SKKOPCEKY = '\GeoPuzzle\GeoPuzzle_SKKopceky.html';

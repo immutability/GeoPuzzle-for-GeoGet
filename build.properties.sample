@@ -1,0 +1,5 @@
+# EN: update this to point to your GeoGet script directory and rename to build.properties
+#     make sure the path is terminated with a slash!
+# SK: upravte na cestu ku vasmu GeoGet skript adresaru a premenujte na build.properties
+#     cesta musi koncit lomitkom!
+deploy.home=c:/Users/<yourusername>/AppData/Roaming/GeoGet/script/

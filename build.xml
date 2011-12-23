@@ -2,12 +2,15 @@
 
 	<taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"/>
 
+	<property file="build.properties"/>
+
 	<property name="plugin.name"      value="GeoPuzzle"/>
-	<property name="plugin.version"   value="1.0.2"/>
+	<property name="plugin.version"   value="1.0.3"/>
 	<stringutil string="${plugin.name}" property="plugin.filename">
 		<lowercase/>
 	</stringutil>
 
+	<property name="plugin.home" value="${deploy.home}${plugin.name}/"/>
 
 	<target name="package" depends="versions" description="Package the plugin into a GIP package file">
 		<zip destfile="${plugin.filename}-${plugin.version}.gip" basedir="." includes="${plugin.name}/*" />
@@ -41,6 +44,14 @@
 		<get src="http://geotrophy.net/xml/kostely-cz-v2.xml" dest="data"/>
 		<get src="http://geotrophy.net/xml/kostely-sk-v2.xml" dest="data"/>
 		<get src="http://geotrophy.net/xml/rekordy-cz-v2.xml" dest="data"/>
+	</target>
+
+	<target name="deploy" description="Copy current plugin files into GeoGet's working scripts directory">
+		<fail unless="deploy.home" message="Please create a build.properties file and define the deploy.home directory."/>
+		<mkdir dir="${plugin.home}"/>
+		<copy todir="${plugin.home}">
+		  <fileset dir="${plugin.name}"/>
+		</copy>
 	</target>
 
 </project>
