@@ -4,37 +4,51 @@ http://tiny.cc/osnica
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 1.0.3 / 2011-12-23
+Verzia: 2.0.0 / 2011-12-23
 }
+
+uses simplexml;
 
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '1.0.3';
+const VERSION = '1.0.5';
 
-// nazvy generovanych HTML suborov s jednotlivymi puzzle
-const OUT_SKKOPCEKY = '\GeoPuzzle\GeoPuzzle_SKKopceky.html';
-const OUT_SKHRADY = '\GeoPuzzle\GeoPuzzle_SKHrady.html';
-const OUT_SKKOSTOLIKY = '\GeoPuzzle\GeoPuzzle_SKKostoliky.html';
-const OUT_CZKOPECKY = '\GeoPuzzle\GeoPuzzle_CZKopecky.html';
-const OUT_CZHRADY = '\GeoPuzzle\GeoPuzzle_CZHrady.html';
-const OUT_CZKOSTELIKY = '\GeoPuzzle\GeoPuzzle_CZKosteliky.html';
-const OUT_CZREKORDY = '\GeoPuzzle\GeoPuzzle_CZRekordy.html';
+// zakladna URL pre XML subory jednotlivych puzzle
+const BASE_URL = 'http://geotrophy.net/xml/';
+const PLUGIN_DIR = '\GeoPuzzle\';
+
 
 type
-  TPuzzleItems = Array[1..35] of String;
+  // jedno policko puzzle
+  TPuzzleItem = record
+    fieldName : String; // meno policka
+    cacheCodes : Array of String; // kod geocache(s) pre dane policko
+    found : boolean; // priznak ci je dane policko oznacene
+  end;
+
+  // cely GeoPuzzle sa vzdy sklada z 35 policok v matici 7x5
+  TPuzzle = Array[1..35] of TPuzzleItem;
+  
+  // download info pre jeden puzzle
+  TPuzzleInfo = record
+    xmlFile : String; // nazov zdrojoveho XML suboru
+    htmlFile : String; // nazov generovaneho HTML suboru
+    pathInfo : String; // cast cesty ku obrazkom, ktora je pre dany puzzle unikatna
+    country : String; // kod krajiny (momentalne CZ alebo SK)
+  end;
+  
+  // sada vsetkych puzzle
+  TPuzzleSet = Array[1..8] of TPuzzleInfo;
+
 
 var
   cnt : integer;
   backgroundGlobal : String; // hlavne pozadie, podla konfiguracie
   useUtfOutput : boolean; // false = ANSI / Windows-1250, true = UTF-8
-  flags_SKKopceky : TBits;
-  flags_SKHrady : TBits;
-  flags_SKKostoliky : TBits;
-  flags_CZKopecky : TBits;
-  flags_CZHrady : TBits;
-  flags_CZKosteliky : TBits;
-  flags_CZRekordy : TBits;
+  cacheDays : double; // kolko dni kym sa nanovo stiahnut XML subory
+
+  puzzleSet : TPuzzleSet;
 
 
 function PluginCaption: String;
@@ -57,7 +71,7 @@ end;
 
 function PluginFlags: String;
 begin
-  Result := 'global,notrans';
+  Result := 'nowork,notrans';
 end;
 
 
@@ -75,16 +89,72 @@ begin
 end;
 
 
-// inicializacia bitovych poli na 35 poloziek
-function InitFlagBits:TBits;
-var
-  i : integer;
+// priprava info o jednotlivych puzzle
+procedure InitPuzzleSet;
 begin
-  Result := TBits.Create;
+  with puzzleSet[1] do
+  begin
+    xmlFile := 'kopecky-cz-v2.xml';
+    htmlFile := 'GeoPuzzle_CZKopecky.html';
+    pathInfo := 'kopecky-cz';
+    country := 'CZ';
+  end;
 
-  // z nejakeho dovodu mi nefungovalo inicializovanie cez flags.Size property
-  for i := 1 to 35 do
-    Result.Bits[i] := false;
+  with puzzleSet[2] do
+  begin
+    xmlFile := 'kopecky-sk-v2.xml';
+    htmlFile := 'GeoPuzzle_SKKopceky.html';
+    pathInfo := 'kopecky-sk';
+    country := 'SK';
+  end;
+  
+  with puzzleSet[3] do
+  begin
+    xmlFile := 'rekordy-cz-v2.xml';
+    htmlFile := 'GeoPuzzle_CZRekordy.html';
+    pathInfo := 'rekordy-cz';
+    country := 'CZ';
+  end;
+
+  with puzzleSet[4] do
+  begin
+    xmlFile := 'hrady-sk-v2.xml';
+    htmlFile := 'GeoPuzzle_SKHrady.html';
+    pathInfo := 'hrady-sk';
+    country := 'SK';
+  end;
+  
+  with puzzleSet[5] do
+  begin
+    xmlFile := 'hrady-cz-v2.xml';
+    htmlFile := 'GeoPuzzle_CZHrady.html';
+    pathInfo := 'hrady-cz';
+    country := 'CZ';
+  end;
+
+  with puzzleSet[6] do
+  begin
+    xmlFile := 'kostely-sk-v2.xml';
+    htmlFile := 'GeoPuzzle_SKKostoliky.html';
+    pathInfo := 'kostely-sk';
+    country := 'SK';
+  end;
+  
+  with puzzleSet[7] do
+  begin
+    xmlFile := 'kostely-cz-v2.xml';
+    htmlFile := 'GeoPuzzle_CZKosteliky.html';
+    pathInfo := 'kostely-cz';
+    country := 'CZ';
+  end;
+  
+  with puzzleSet[8] do
+  begin
+    xmlFile := 'rozhledny-cz-v2.xml';
+    htmlFile := 'GeoPuzzle_CZRozhledny.html';
+    pathInfo := 'rozhledny-cz';
+    country := 'CZ';
+  end;
 end;
 
 
@@ -92,15 +162,112 @@ end;
 function GetEncodedString(input:String):String;
 begin
   if useUtfOutput then begin
-    Result := AnsiToUtf(input);
+    Result := input;
   end
   else
-    Result := input;
+    Result := UtfToAnsi(input);
+end;
+
+
+// stiahne XML pre dany puzzle do pracovneho adresara
+function DownloadPuzzleXML(filename:String) : boolean;
+var
+  fileAvailable : boolean;
+  tempStr : String;
+begin
+  // zisti, ci uz mame k dispozicii starsiu verziu
+  fileAvailable := FileExists(GEOGET_SCRIPTDIR + PLUGIN_DIR + filename);
+  
+  // stiahni iba ak je starsi nez 1 den
+  if (Now - GetFileTime(GEOGET_SCRIPTDIR + PLUGIN_DIR + filename)) > cacheDays then
+  begin
+    if HttpAsk('POST', BASE_URL + filename, '', '', tempStr) then
+    begin
+      // uloz subor
+      StringToFile(tempStr, GEOGET_SCRIPTDIR + PLUGIN_DIR + filename)
+      Result := true;
+    end
+    else begin
+      // ak sa nepodarilo stiahnut, ale mame starsiu verziu, pouzi tu
+      if fileAvailable then
+      begin
+        Result := true;
+      end
+      // ak sa nepodarilo stiahnut a starsiu nemame, zobraz chybu
+      else begin
+        ShowMessage('Pøi stahování souboru došlo k chybì:' + sLineBreak + BASE_URL + filename);
+        Result := false;
+      end;
+    end;
+  end
+  else
+    Result := true; // pouzijeme starsiu verziu
+end;
+
+
+// rozlozi XML subor pre dany puzzle do struktur pre dalsie spracovanie
+function ParsePuzzleXML(filename:String) : TPuzzle;
+var 
+  Xml : TJclSimpleXML;
+  element, subElement :  TJclSimpleXMLElem;
+  n : Integer;
+  j : Integer;
+  fieldIndex : Integer;
+  codeIndex : Integer;
+  gc : TGeo;
+begin
+  // vytvorime XML parser pre dany subor
+  Xml := TJclSimpleXML.Create();
+  try
+    Xml.loadfromfile(GEOGET_SCRIPTDIR + PLUGIN_DIR + filename, seAuto, 0);
+  finally
+    //DeleteFile(sFile);
+  end;
+
+  // field index je 1-based index pre polozku puzzle, ktorych je vzdy 35
+  fieldIndex := 1;
+  gc := TGeo.Create();
+  
+  // prechadzame vsetky XML polozky, zaujimaju nas len <cache> elementy
+  for n := 0 to XML.Root.Items.count - 1 do 
+  begin
+    element := XML.Root.Items[n];
+    if element.name='cache' then
+    begin
+      // pre pole cacheCodes nastavime dlzku podla mnozstva subelementov
+      // ratame ze subelementy budu vzdy jeden <puzzle> a "n" <code"
+      SetLength(Result[fieldIndex].cacheCodes, element.Items.count-1);
+      
+      // nastav found na false
+      Result[fieldIndex].found := false;
+      
+      codeIndex := 0;
+      for j := 0 to element.Items.count - 1 do
+      begin
+        subElement := element.Items[j];
+        
+        // pre puzzle element vytiahneme len jeho nazov
+        if subElement.name='puzzle' then
+          Result[fieldIndex].fieldName := subElement.properties.Value('title', '');
+          
+        // pre code element, pridame GC kod do pola a inkrementujeme index
+        if subElement.name='code' then begin
+          Result[fieldIndex].cacheCodes[codeIndex] := subElement.Value;
+          gc.LoadByGC(subElement.Value);
+          if (gc.IsFound) or (gc.IsOwner) then Result[fieldIndex].found := true;
+          Inc(codeIndex);
+        end;
+      end;
+      
+      // na zaver inkrementujeme index pre jednotlive policka
+      Inc(fieldIndex);
+    end;
+  end;
 end;
 
 
 // generovanie HTML kodu pre konkretny puzzle
-procedure GeneratePuzzle(flags:TBits; names:TPuzzleItems; output:String; urlDirName:String; backgroundString:String);
+procedure GeneratePuzzle(puzzle:TPuzzle; output:String; urlDirName:String; backgroundString:String);
 var
   htmlout : String;
   i : integer;
@@ -110,7 +277,7 @@ begin
   foundGC := 0;
   
   for i := 1 to 35 do
-    if flags.Bits[i] = true then begin
+    if puzzle[i].found = true then begin
       Inc(foundGC);
       htmlout := htmlout + '<div style="background: transparent url(http://www.geotrophy.net/content/' + urlDirName + '/' + IntToStr(i) + '.png) no-repeat ' + CalculateXOffset(i) + ' ' + CalculateYOffset(i) + ' ">';
     end;
@@ -119,40 +286,29 @@ begin
 
   //
   for i := 1 to 35 do
-    htmlout := htmlout + '<div style="float:left; overflow: hidden; width:72px; height: 72px; cursor: help;" title="' + GetEncodedString(names[i]) + '">&nbsp;</div>';
+    htmlout := htmlout + '<div style="float:left; overflow: hidden; width:72px; height: 72px; cursor: help;" title="' + GetEncodedString(puzzle[i].fieldName) + '">&nbsp;</div>';
 
   htmlout := htmlout + '</div>';
   for i := 1 to foundGC do
     htmlout := htmlout + '</div>';
   htmlout := htmlout + '</div>';
   
-  if FileExists(output) then begin
-    if DeleteFile(output) then
-      StringToFile(htmlout, output);
+  if FileExists(GEOGET_SCRIPTDIR + PLUGIN_DIR + output) then begin
+    if DeleteFile(GEOGET_SCRIPTDIR + PLUGIN_DIR + output) then
+      StringToFile(htmlout, GEOGET_SCRIPTDIR + PLUGIN_DIR + output);
   end
   else
-    StringToFile(htmlout, output);
+    StringToFile(htmlout, GEOGET_SCRIPTDIR + PLUGIN_DIR + output);
 end;
 
 
-// includovanie datovych poli pre jednotlive SK/CZ puzzle
-{$I PuzzleSK.pas}
-{$I PuzzleCZ.pas}
-
-
+// hlavna funkcia ktora vykonava samotnu pracu pluginu
 procedure PluginStart;
 var
   backgroundIndex : integer;
+  i : integer;
+  puzzle : TPuzzle;
 begin
-  // inicializacia bitovych poli
-  flags_SKKopceky := InitFlagBits();
-  flags_SKHrady := InitFlagBits();
-  flags_SKKostoliky := InitFlagBits();
-  flags_CZKopecky := InitFlagBits();
-  flags_CZHrady := InitFlagBits();
-  flags_CZKosteliky := InitFlagBits();
-  flags_CZRekordy := InitFlagBits();
-
   // reset pocitadla
   cnt := 0;
 
@@ -178,36 +334,49 @@ begin
   end
   else
     useUtfOutput := false;
+    
+  try
+    cacheDays := StrToFloat(CACHE_DAYS);
+  except
+    cacheDays := 7;
+  end;
+  
+  if(cacheDays < 0) then
+    cacheDays := 0;
+    
+  InitPuzzleSet();
 
   // Busy Dialog
   GeoBusyStart;
   GeoBusyCaption(PluginHint());
-  GeoBusyProgress(0, geoget_maxcount);
-  GeoBusyKind('Zpracování puzzle - naèítání keší...');
+  GeoBusyProgress(0, Length(puzzleSet));
+  GeoBusyKind('Zpracování GeoPuzzle...');
+  
+  for i := 1 to Length(puzzleSet) do
+  begin
+    GeoBusyProgress(i, Length(puzzleSet));
+    GeoBusyKind('Zpracování GeoPuzzle - ' + puzzleSet[i].xmlFile);
+
+    if DownloadPuzzleXML(puzzleSet[i].xmlFile) then
+    begin
+      puzzle := ParsePuzzleXML(puzzleSet[i].xmlFile);
+      GeneratePuzzle(puzzle, puzzleSet[i].htmlFile, puzzleSet[i].pathInfo, backgroundGlobal);
+    end
+    else
+      exit;
+  end;
 end;
 
 
 procedure PluginWork;
 begin
-  if (GC.IsFound) or (GC.IsOwner) then begin
-    ProcessSKKopceky(GC);
-    ProcessSKHrady(GC);
-    ProcessSKKostoliky(GC);
-    ProcessCZKopecky(GC);
-    ProcessCZHrady(GC);
-    ProcessCZKosteliky(GC);
-    ProcessCZRekordy(GC);
-  end;
-
-  // aktualizuj progres
-  Inc(cnt);
-  GeoBusyProgress(cnt,geoget_maxcount);
+  // nepouziva sa v nowork rezime
 end;
 
 
 procedure PluginStop;
 begin
-  GenerateSKKopceky();
+  {GenerateSKKopceky();
   GenerateSKHrady();
   GenerateSKKostoliky();
   GenerateCZKopecky();
@@ -226,5 +395,5 @@ begin
       '<a href="file://'+GEOGET_SCRIPTDIR + OUT_SKKOSTOLIKY + '">Drevené kostolíky Slovenska</a><br>' +
       '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZREKORDY + '">Èeské rekordy</a><br>'
       );
-  end;
+  end;}
 end;
