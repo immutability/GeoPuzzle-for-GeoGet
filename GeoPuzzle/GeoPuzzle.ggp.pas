@@ -46,6 +46,7 @@ var
   cnt : integer;
   backgroundGlobal : String; // hlavne pozadie, podla konfiguracie
   useUtfOutput : boolean; // false = ANSI / Windows-1250, true = UTF-8
+  cacheDays : double; // kolko dni kym sa nanovo stiahnut XML subory
 
   puzzleSet : TPuzzleSet;
 
@@ -171,17 +172,33 @@ end;
 // stiahne XML pre dany puzzle do pracovneho adresara
 function DownloadPuzzleXML(filename:String) : boolean;
 var
+  fileAvailable : boolean;
   tempStr : String;
 begin
-  if HttpAsk('POST', BASE_URL + filename, '', '', tempStr) then begin
-    // uloz
-    StringToFile(tempStr, GEOGET_SCRIPTDIR + PLUGIN_DIR + filename)
-    Result := true;
-  end
-  else begin
-    // zobraz chybu
-    ShowMessage('Pøi stahování souboru došlo k chybì');
-    Result := false;
+  // zisti, ci uz mame k dispozicii starsiu verziu
+  fileAvailable := FileExists(GEOGET_SCRIPTDIR + PLUGIN_DIR + filename);
+  
+  // stiahni iba ak je starsi nez 1 den
+  if (Now - GetFileTime(GEOGET_SCRIPTDIR + PLUGIN_DIR + filename)) > cacheDays then
+  begin
+    if HttpAsk('POST', BASE_URL + filename, '', '', tempStr) then
+    begin
+      // uloz subor
+      StringToFile(tempStr, GEOGET_SCRIPTDIR + PLUGIN_DIR + filename)
+      Result := true;
+    end
+    else begin
+      // ak sa nepodarilo stiahnut, ale mame starsiu verziu, pouzi tu
+      if fileAvailable then
+      begin
+        Result := true;
+      end
+      // ak sa nepodarilo stiahnut a starsiu nemame, zobraz chybu
+      else begin
+        ShowMessage('Pøi stahování souboru došlo k chybì:' + sLineBreak + BASE_URL + filename);
+        Result := false;
+      end;
+    end;
   end;
 end;
 
@@ -316,6 +333,15 @@ begin
   else
     useUtfOutput := false;
     
+  try
+    cacheDays := StrToFloat(CACHE_DAYS);
+  except
+    cacheDays := 7;
+  end;
+  
+  if(cacheDays < 0) then
+    cacheDays := 0;
+    
   InitPuzzleSet();
 
   // Busy Dialog
@@ -326,9 +352,13 @@ begin
   
   for i := 1 to Length(puzzleSet) do
   begin
-    DownloadPuzzleXML(puzzleSet[i].xmlFile);
-    puzzle := ParsePuzzleXML(puzzleSet[i].xmlFile);
-    GeneratePuzzle(puzzle, puzzleSet[i].htmlFile, puzzleSet[i].pathInfo, backgroundGlobal);
+    if DownloadPuzzleXML(puzzleSet[i].xmlFile) then
+    begin
+      puzzle := ParsePuzzleXML(puzzleSet[i].xmlFile);
+      GeneratePuzzle(puzzle, puzzleSet[i].htmlFile, puzzleSet[i].pathInfo, backgroundGlobal);
+    end
+    else
+      exit;
   end;
 end;
 
