@@ -4,7 +4,7 @@ http://tiny.cc/osnica
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 2.0.0 / 2011-12-23
+Verzia: 2.0.0 / 2012-02-01
 }
 
 uses simplexml;
@@ -12,7 +12,7 @@ uses simplexml;
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '1.0.5';
+const VERSION = '2.0.0';
 
 // zakladna URL pre XML subory jednotlivych puzzle
 const BASE_URL = 'http://geotrophy.net/xml/';
@@ -32,6 +32,7 @@ type
   
   // download info pre jeden puzzle
   TPuzzleInfo = record
+    title : String; // nazov puzzle
     xmlFile : String; // nazov zdrojoveho XML suboru
     htmlFile : String; // nazov generovaneho HTML suboru
     pathInfo : String; // cast cesty ku obrazkom, ktora je pre dany puzzle unikatna
@@ -43,10 +44,11 @@ type
 
 
 var
-  cnt : integer;
   backgroundGlobal : String; // hlavne pozadie, podla konfiguracie
   useUtfOutput : boolean; // false = ANSI / Windows-1250, true = UTF-8
   cacheDays : double; // kolko dni kym sa nanovo stiahnut XML subory
+
+  complete : String; // notifikacia ktora sa zobrazi po ukonceni behu
 
   puzzleSet : TPuzzleSet;
 
@@ -94,6 +96,7 @@ procedure InitPuzzleSet;
 begin
   with puzzleSet[1] do
   begin
+    title := 'Èeské kopeèky';
     xmlFile := 'kopecky-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZKopecky.html';
     pathInfo := 'kopecky-cz';
@@ -102,6 +105,7 @@ begin
 
   with puzzleSet[2] do
   begin
+    title := 'Slovenské kopèeky';
     xmlFile := 'kopecky-sk-v2.xml';
     htmlFile := 'GeoPuzzle_SKKopceky.html';
     pathInfo := 'kopecky-sk';
@@ -110,6 +114,7 @@ begin
   
   with puzzleSet[3] do
   begin
+    title := 'Èeské rekordy';
     xmlFile := 'rekordy-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZRekordy.html';
     pathInfo := 'rekordy-cz';
@@ -118,6 +123,7 @@ begin
 
   with puzzleSet[4] do
   begin
+    title := 'Slovenské hrady';
     xmlFile := 'hrady-sk-v2.xml';
     htmlFile := 'GeoPuzzle_SKHrady.html';
     pathInfo := 'hrady-sk';
@@ -126,6 +132,7 @@ begin
   
   with puzzleSet[5] do
   begin
+    title := 'Èeské hrady';
     xmlFile := 'hrady-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZHrady.html';
     pathInfo := 'hrady-cz';
@@ -134,6 +141,7 @@ begin
 
   with puzzleSet[6] do
   begin
+    title := 'Drevené kostolíky Slovenska';
     xmlFile := 'kostely-sk-v2.xml';
     htmlFile := 'GeoPuzzle_SKKostoliky.html';
     pathInfo := 'kostely-sk';
@@ -142,6 +150,7 @@ begin
   
   with puzzleSet[7] do
   begin
+    title := 'Døevìné kostolíky';
     xmlFile := 'kostely-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZKosteliky.html';
     pathInfo := 'kostely-cz';
@@ -150,6 +159,7 @@ begin
   
   with puzzleSet[8] do
   begin
+    title := 'Èeské rozhledny';
     xmlFile := 'rozhledny-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZRozhledny.html';
     pathInfo := 'rozhledny-cz';
@@ -309,8 +319,8 @@ var
   i : integer;
   puzzle : TPuzzle;
 begin
-  // reset pocitadla
-  cnt := 0;
+  // inicializacia textoveho potvrdenia
+  complete := 'Vaše GeoPuzzles byly úspìšnì vytvoøeny:<br><br>';
 
   // kontrola nastavenia pozadia, pouzi "2" ako default
   try
@@ -355,7 +365,9 @@ begin
   for i := 1 to Length(puzzleSet) do
   begin
     GeoBusyProgress(i, Length(puzzleSet));
-    GeoBusyKind('Zpracování GeoPuzzle - ' + puzzleSet[i].xmlFile);
+    GeoBusyKind('Zpracování GeoPuzzle - ' + puzzleSet[i].title);
+
+    complete := complete + '<a href="file://'+ GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzleSet[i].htmlFile + '">' + puzzleSet[i].title + '</a><br>';
 
     if DownloadPuzzleXML(puzzleSet[i].xmlFile) then
     begin
@@ -376,24 +388,6 @@ end;
 
 procedure PluginStop;
 begin
-  {GenerateSKKopceky();
-  GenerateSKHrady();
-  GenerateSKKostoliky();
-  GenerateCZKopecky();
-  GenerateCZHrady();
-  GenerateCZKosteliky();
-  GenerateCZRekordy();
-
-  if SILENT = '0' then begin
-    ShowHTMLMessage(PluginCaption(), 
-      'Vaše GeoPuzzles byly úspìšnì vytvoøeny:<br><br>' +
-      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZKOPECKY + '">Èeské kopeèky</a><br>' +
-      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_SKKOPCEKY + '">Slovenské kopèeky</a><br>' +
-      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZHRADY + '">Èeské hrady</a><br>' +
-      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_SKHRADY + '">Slovenské hrady</a><br>' +
-      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZKOSTELIKY + '">Døevìné kostelíky</a><br>' +
-      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_SKKOSTOLIKY + '">Drevené kostolíky Slovenska</a><br>' +
-      '<a href="file://'+GEOGET_SCRIPTDIR + OUT_CZREKORDY + '">Èeské rekordy</a><br>'
-      );
-  end;}
+  if SILENT = '0' then
+    ShowHTMLMessage(PluginCaption(), complete);
 end;
