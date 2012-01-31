@@ -1,7 +1,12 @@
-GeoPuzzle - a plugin for GeoGet, http://geoget.ararat.cz
+GeoPuzzle - a plugin for GeoGet, a freeware application for all your geocaching needs!
 
-CS/SK:
-Doplnok ku štatistikám, ktorý umožňuje automatizovať generovanie HTML kódu pre GeoPuzzle zo stránky GeoTrophy. V súčasnosti je dostupných 6 puzzle pre hory, hrady, kostoly a iné významné miesta v Českej a Slovenskej republike.
+You can find more information about GeoGet and this plugin here:
+GeoGet: http://geoget.ararat.cz
+GeoPuzzle: http://geotrophy.net
+GeoPuzzle plugin for GeoGet: http://geoget.ararat.cz/doku.php/user:skript:geopuzzle
 
-EN: 
-This plugin automatically generates the HTML code for GeoPuzzles, designed by GeoTrophy. Currently, there are 6 puzzles covering mountains, castles, churches and other special locations in Czech Republic and Slovakia. Unless you live, or geocache in these 2 countries, this plugin will probably not be very useful for you.
+SUMMARY (SK)
+Doplnok ku štatistikám, ktorý umožňuje automatizovať generovanie HTML kódu pre GeoPuzzle zo stránky GeoTrophy. V súčasnosti je dostupných 8 puzzle pre hory, hrady, kostoly a iné významné miesta v Českej a Slovenskej republike.
+
+SUMMARY (EN)
+This plugin automatically generates the HTML code for GeoPuzzles, designed by GeoTrophy. Currently, there are 8 puzzles covering mountains, castles, churches and other special locations in Czech Republic and Slovakia. Unless you live, or geocache in these 2 countries, this plugin will probably not be very useful for you.
