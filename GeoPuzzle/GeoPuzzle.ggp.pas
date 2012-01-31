@@ -199,7 +199,9 @@ begin
         Result := false;
       end;
     end;
-  end;
+  end
+  else
+    Result := true; // pouzijeme starsiu verziu
 end;
 
 
@@ -345,13 +347,16 @@ begin
   InitPuzzleSet();
 
   // Busy Dialog
-  {GeoBusyStart;
+  GeoBusyStart;
   GeoBusyCaption(PluginHint());
-  GeoBusyProgress(0, geoget_maxcount);
-  GeoBusyKind('Zpracování puzzle - naèítání keší...');}
+  GeoBusyProgress(0, Length(puzzleSet));
+  GeoBusyKind('Zpracování GeoPuzzle...');
   
   for i := 1 to Length(puzzleSet) do
   begin
+    GeoBusyProgress(i, Length(puzzleSet));
+    GeoBusyKind('Zpracování GeoPuzzle - ' + puzzleSet[i].xmlFile);
+
     if DownloadPuzzleXML(puzzleSet[i].xmlFile) then
     begin
       puzzle := ParsePuzzleXML(puzzleSet[i].xmlFile);
