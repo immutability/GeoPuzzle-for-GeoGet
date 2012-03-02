@@ -40,7 +40,7 @@ type
   end;
   
   // sada vsetkych puzzle
-  TPuzzleSet = Array[1..8] of TPuzzleInfo;
+  TPuzzleSet = Array[1..9] of TPuzzleInfo;
 
 
 var
@@ -164,6 +164,15 @@ begin
     htmlFile := 'GeoPuzzle_CZRozhledny.html';
     pathInfo := 'rozhledny-cz';
     country := 'CZ';
+  end;
+
+  with puzzleSet[9] do
+  begin
+    title := 'Hungarian Castles';
+    xmlFile := 'hrady-hu-v2.xml';
+    htmlFile := 'GeoPuzzle_HUCastles.html';
+    pathInfo := 'hrady-hu';
+    country := 'HU';
   end;
 end;
 
