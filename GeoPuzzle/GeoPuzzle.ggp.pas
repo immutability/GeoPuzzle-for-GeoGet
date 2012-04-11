@@ -4,7 +4,7 @@ http://tiny.cc/osnica
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 2.0.1 / 2012-03-02
+Verzia: 2.0.2 / 2012-04-11
 }
 
 uses simplexml;
@@ -12,7 +12,7 @@ uses simplexml;
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '2.0.1';
+const VERSION = '2.0.2';
 
 // zakladna URL pre XML subory jednotlivych puzzle
 const BASE_URL = 'http://geotrophy.net/xml/';
@@ -40,7 +40,7 @@ type
   end;
   
   // sada vsetkych puzzle
-  TPuzzleSet = Array[1..9] of TPuzzleInfo;
+  TPuzzleSet = Array[1..10] of TPuzzleInfo;
 
 
 var
@@ -173,6 +173,15 @@ begin
     htmlFile := 'GeoPuzzle_HUCastles.html';
     pathInfo := 'hrady-hu';
     country := 'HU';
+  end;
+
+  with puzzleSet[10] do
+  begin
+    title := 'Slovenské jaskyne';
+    xmlFile := 'jeskyne-sk-v2.xml';
+    htmlFile := 'GeoPuzzle_SKJaskyne.html';
+    pathInfo := 'jeskyne-sk';
+    country := 'SK';
   end;
 end;
 
