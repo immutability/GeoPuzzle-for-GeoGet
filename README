@@ -6,7 +6,7 @@ GeoPuzzle: http://geotrophy.net
 GeoPuzzle plugin for GeoGet: http://geoget.ararat.cz/doku.php/user:skript:geopuzzle
 
 SUMMARY (SK)
-Doplnok ku štatistikám, ktorý umožňuje automatizovať generovanie HTML kódu pre GeoPuzzle zo stránky GeoTrophy. V súčasnosti je dostupných 8 puzzle pre hory, hrady, kostoly a iné významné miesta v Českej a Slovenskej republike.
+Doplnok ku štatistikám, ktorý umožňuje automatizovať generovanie HTML kódu pre GeoPuzzle zo stránky GeoTrophy. V súčasnosti je dostupných 11 puzzle pre hory, hrady, jaskyne, kostoly, rozhľadne a iné významné miesta v Českej, Slovenskej a Maďarskej republike. Puzzle "European Summits" zahŕňa významné vrcholy v celej Európe.
 
 SUMMARY (EN)
-This plugin automatically generates the HTML code for GeoPuzzles, designed by GeoTrophy. Currently, there are 8 puzzles covering mountains, castles, churches and other special locations in Czech Republic and Slovakia. Unless you live, or geocache in these 2 countries, this plugin will probably not be very useful for you.
+This plugin automatically generates the HTML code for GeoPuzzles, designed by GeoTrophy. Currently, there are 11 puzzles covering mountains, castles, caves, churches and other special locations in Czech Republic, Slovakia and Hungary. This includes the new puzzle "European Summits", covering all of Europe.
