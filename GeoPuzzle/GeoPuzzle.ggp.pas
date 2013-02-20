@@ -41,6 +41,7 @@ type
     title : String; // nazov puzzle
 	puzzleUrl : String; // adresa stranky pre dany puzzle
 	data : TPuzzle; // data daneho puzzle, ziskane z XML suboru
+	foundCount : Byte; // pocet najdenych
   end;
   
   // sada vsetkych puzzle
@@ -51,6 +52,8 @@ var
   backgroundGlobal : String; // hlavne pozadie, podla konfiguracie
   useUtfOutput : boolean; // false = ANSI / Windows-1250, true = UTF-8
   cacheDays : double; // kolko dni kym sa nanovo stiahnut XML subory
+  showTitle : boolean; // pridavat nadpis?
+  showCount : boolean; // pridavat pocet nalezov?
 
   complete : String; // notifikacia ktora sa zobrazi po ukonceni behu
 
@@ -215,6 +218,19 @@ begin
 end;
 
 
+// vrati nazov polozky so spravnym kodovanim
+// inverzne ku predoslej funkcii, pre pouzitie len pre 
+// retazcove literaly v PAS zdrojaku, ktory je v ANSI
+function GetEncodedSourceString(input:String):String;
+begin
+  if useUtfOutput then begin
+    Result := AnsiToUtf(input);
+  end
+  else
+    Result := input;
+end;
+
+
 // stiahne XML pre dany puzzle do pracovneho adresara
 function DownloadPuzzleXML(filename:String) : boolean;
 var
@@ -274,6 +290,9 @@ begin
   fieldIndex := 1;
   gc := TGeo.Create();
   
+  // pocet najdenych inicializujeme pre istotu na nulu
+  puzzle.foundCount := 0;
+  
   // prechadzame vsetky XML polozky, zaujimaju nas len <cache> elementy
   for n := 0 to XML.Root.Items.count - 1 do 
   begin
@@ -313,6 +332,9 @@ begin
           Inc(codeIndex);
         end;
       end;
+	  
+	  if(puzzle.data[fieldIndex].found) then
+	    Inc(puzzle.foundCount);
       
       // na zaver inkrementujeme index pre jednotlive policka
       Inc(fieldIndex);
@@ -328,7 +350,13 @@ var
   i : integer;
   foundGC : integer;
 begin
-  htmlout := '<div style="width: 688px; height: 324px; background: transparent url(http://www.geotrophy.net/content/' + puzzle.pathInfo + '/background' + backgroundString + '.png) no-repeat 0 0; margin: 10px auto;" >';
+  htmlout := '';
+  
+  // titulok
+  if(showTitle) then
+    htmlout := htmlout + '<h3 style="margin-bottom:0; padding-bottom: 0; text-align:center;">GeoPuzzle ' + GetEncodedString(puzzle.title) + '</h3>';
+  
+  htmlout := htmlout + '<div style="width: 688px; height: 324px; background: transparent url(http://www.geotrophy.net/content/' + puzzle.pathInfo + '/background' + backgroundString + '.png) no-repeat 0 0; margin: 10px auto;" >';
   foundGC := 0;
   
   for i := 1 to 35 do
@@ -346,9 +374,18 @@ begin
   // odkaz na domovsku stranku daneho puzzle
   htmlout := htmlout + '<a href="' + puzzle.puzzleUrl + '" style="float:left; overflow: hidden; width:72px; height: 72px; cursor: pointer;" title="GeoPuzzle ' + GetEncodedString(puzzle.title) + '">&nbsp;</a>';
 
+  // uzavriet div
   htmlout := htmlout + '</div>';
+  
+  // closing divs pre nalezy
   for i := 1 to foundGC do
     htmlout := htmlout + '</div>';
+	
+  // pocet nalezov
+  if(showCount) then
+    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(puzzle.foundCount) + '</b></div>'; 
+  
+  // zaverecny uzatvaraci div
   htmlout := htmlout + '</div>';
   
   if FileExists(GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzle.htmlFile) then begin
@@ -391,7 +428,22 @@ begin
   end
   else
     useUtfOutput := false;
-    
+	
+  // nastavenie nadpisu
+  if SHOW_TITLE = '1' then begin
+    showTitle := true;
+  end
+  else
+    showTitle := false;
+	
+  // nastavenie poctu nalezov
+  if SHOW_COUNT = '1' then begin
+    showCount := true;
+  end
+  else
+    showCount := false;
+	
+  // nastavenie cachovania XML suborov    
   try
     cacheDays := StrToFloat(CACHE_DAYS);
   except
