@@ -54,6 +54,8 @@ var
   cacheDays : double; // kolko dni kym sa nanovo stiahnut XML subory
   showTitle : boolean; // pridavat nadpis?
   showCount : boolean; // pridavat pocet nalezov?
+  countryList : String; // zoznam povolenych krajin
+  allCountries : boolean; // generovat vsetky puzzle
 
   complete : String; // notifikacia ktora sa zobrazi po ukonceni behu
 
@@ -452,6 +454,15 @@ begin
   
   if(cacheDays < 0) then
     cacheDays := 0;
+	
+  // zoznam povolenych krajin
+  countryList := COUNTRIES;
+  if Length(countryList) = 0 then
+  begin
+    allCountries := true;
+  end
+  else 
+    allCountries := false;
     
   InitPuzzleSet();
 
@@ -464,14 +475,17 @@ begin
   for i := 1 to Length(puzzleSet) do
   begin
     GeoBusyProgress(i, Length(puzzleSet));
-    GeoBusyKind('Zpracování GeoPuzzle'); // - ' + IntToStr(i) + ' z ' + IntToStr(Length(puzzleSet))); //puzzleSet[i].title);
+    GeoBusyKind('Zpracování GeoPuzzle');
 
     if DownloadPuzzleXML(puzzleSet[i].xmlFile) then
     begin
-      ParsePuzzleXML(puzzleSet[i]);
-	  GeoBusyKind('Zpracování GeoPuzzle - ' + UtfToAnsi(puzzleSet[i].title));
-      GeneratePuzzle(puzzleSet[i], backgroundGlobal);
-      complete := complete + '<a href="file://'+ GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzleSet[i].htmlFile + '">' + UtfToAnsi(puzzleSet[i].title) + '</a><br>';
+	  if allCountries or RegexFind(puzzleSet[i].country, countryList) then 
+	  begin
+        ParsePuzzleXML(puzzleSet[i]);
+	    GeoBusyKind('Zpracování GeoPuzzle - ' + UtfToAnsi(puzzleSet[i].title));
+        GeneratePuzzle(puzzleSet[i], backgroundGlobal);
+        complete := complete + '<a href="file://'+ GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzleSet[i].htmlFile + '">' + UtfToAnsi(puzzleSet[i].title) + '</a><br>';
+	  end
     end
     else
       exit;
