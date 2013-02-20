@@ -4,7 +4,7 @@ http://tiny.cc/osnica
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 2.0.3 / 2012-07-05
+Verzia: 2.0.4 / 2013-02-10
 }
 
 uses simplexml;
@@ -12,7 +12,7 @@ uses simplexml;
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '2.0.3';
+const VERSION = '2.0.4';
 
 // zakladna URL pre XML subory jednotlivych puzzle
 const BASE_URL = 'http://geotrophy.net/xml/';
@@ -40,7 +40,7 @@ type
   end;
   
   // sada vsetkych puzzle
-  TPuzzleSet = Array[1..11] of TPuzzleInfo;
+  TPuzzleSet = Array[1..12] of TPuzzleInfo;
 
 
 var
@@ -192,6 +192,15 @@ begin
     pathInfo := 'summits';
     country := 'EU';
   end;
+  
+  with puzzleSet[12] do
+  begin
+    title := 'Tatry';
+    xmlFile := 'tatry-v2.xml';
+    htmlFile := 'GeoPuzzle_SKTatry.html';
+    pathInfo := 'tatry';
+    country := 'SK';
+  end;  
 end;
 
 

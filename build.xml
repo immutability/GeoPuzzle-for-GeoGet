@@ -5,7 +5,7 @@
 	<property file="build.properties"/>
 
 	<property name="plugin.name"      value="GeoPuzzle"/>
-	<property name="plugin.version"   value="2.0.3"/>
+	<property name="plugin.version"   value="2.0.4"/>
 	<stringutil string="${plugin.name}" property="plugin.filename">
 		<lowercase/>
 	</stringutil>
@@ -48,6 +48,7 @@
 		<get src="http://www.geotrophy.net/xml/rozhledny-cz-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/jeskyne-sk-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/summits-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/tatry-v2.xml" dest="data"/>
 	</target>
 
 	<target name="deploy" description="Copy current plugin files into GeoGet's working scripts directory">
