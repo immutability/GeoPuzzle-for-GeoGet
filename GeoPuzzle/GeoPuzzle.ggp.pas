@@ -4,7 +4,7 @@ http://tiny.cc/osnica
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 2.0.4 / 2013-02-10
+Verzia: 2.0.5 / 2013-02-20
 }
 
 uses simplexml;
@@ -12,7 +12,7 @@ uses simplexml;
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '2.0.4';
+const VERSION = '2.0.5';
 
 // zakladna URL pre XML subory jednotlivych puzzle
 const BASE_URL = 'http://geotrophy.net/xml/';

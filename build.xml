@@ -5,7 +5,7 @@
 	<property file="build.properties"/>
 
 	<property name="plugin.name"      value="GeoPuzzle"/>
-	<property name="plugin.version"   value="2.0.4"/>
+	<property name="plugin.version"   value="2.0.5"/>
 	<stringutil string="${plugin.name}" property="plugin.filename">
 		<lowercase/>
 	</stringutil>
@@ -37,18 +37,19 @@
 	</target>
 
 	<target name="getdata" description="Downloads XML data files from geotrophy.net">
-		<get src="http://geotrophy.net/xml/kopecky-cz-v2.xml" dest="data"/>
-		<get src="http://geotrophy.net/xml/kopecky-sk-v2.xml" dest="data"/>
-		<get src="http://geotrophy.net/xml/hrady-cz-v2.xml" dest="data"/>
-		<get src="http://geotrophy.net/xml/hrady-sk-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/kopecky-cz-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/kopecky-sk-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/hrady-cz-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/hrady-sk-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/hrady-hu-v2.xml" dest="data"/>
-		<get src="http://geotrophy.net/xml/kostely-cz-v2.xml" dest="data"/>
-		<get src="http://geotrophy.net/xml/kostely-sk-v2.xml" dest="data"/>
-		<get src="http://geotrophy.net/xml/rekordy-cz-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/kostely-cz-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/kostely-sk-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/rekordy-cz-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/rozhledny-cz-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/jeskyne-sk-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/summits-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/tatry-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/zamky-cz-v2.xml" dest="data"/>
 	</target>
 
 	<target name="deploy" description="Copy current plugin files into GeoGet's working scripts directory">
