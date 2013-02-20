@@ -40,7 +40,7 @@ type
   end;
   
   // sada vsetkych puzzle
-  TPuzzleSet = Array[1..12] of TPuzzleInfo;
+  TPuzzleSet = Array[1..13] of TPuzzleInfo;
 
 
 var
@@ -200,6 +200,15 @@ begin
     htmlFile := 'GeoPuzzle_SKTatry.html';
     pathInfo := 'tatry';
     country := 'SK';
+  end;  
+  
+  with puzzleSet[13] do
+  begin
+    title := 'Èeské zámky';
+    xmlFile := 'zamky-cz-v2.xml';
+    htmlFile := 'GeoPuzzle_CZZamky.html';
+    pathInfo := 'zamky-cz';
+    country := 'CZ';
   end;  
 end;
 
