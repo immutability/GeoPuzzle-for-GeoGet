@@ -32,11 +32,15 @@ type
   
   // download info pre jeden puzzle
   TPuzzleInfo = record
-    title : String; // nazov puzzle
+	// preddefinovane hodnoty
     xmlFile : String; // nazov zdrojoveho XML suboru
     htmlFile : String; // nazov generovaneho HTML suboru
     pathInfo : String; // cast cesty ku obrazkom, ktora je pre dany puzzle unikatna
     country : String; // kod krajiny (momentalne CZ alebo SK)
+	// hodnoty nacitane z XML suboru
+    title : String; // nazov puzzle
+	puzzleUrl : String; // adresa stranky pre dany puzzle
+	data : TPuzzle; // data daneho puzzle, ziskane z XML suboru
   end;
   
   // sada vsetkych puzzle
@@ -96,7 +100,6 @@ procedure InitPuzzleSet;
 begin
   with puzzleSet[1] do
   begin
-    title := 'Èeské kopeèky';
     xmlFile := 'kopecky-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZKopecky.html';
     pathInfo := 'kopecky-cz';
@@ -105,7 +108,6 @@ begin
 
   with puzzleSet[2] do
   begin
-    title := 'Slovenské kopèeky';
     xmlFile := 'kopecky-sk-v2.xml';
     htmlFile := 'GeoPuzzle_SKKopceky.html';
     pathInfo := 'kopecky-sk';
@@ -114,7 +116,6 @@ begin
   
   with puzzleSet[3] do
   begin
-    title := 'Èeské rekordy';
     xmlFile := 'rekordy-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZRekordy.html';
     pathInfo := 'rekordy-cz';
@@ -123,7 +124,6 @@ begin
 
   with puzzleSet[4] do
   begin
-    title := 'Slovenské hrady';
     xmlFile := 'hrady-sk-v2.xml';
     htmlFile := 'GeoPuzzle_SKHrady.html';
     pathInfo := 'hrady-sk';
@@ -132,7 +132,6 @@ begin
   
   with puzzleSet[5] do
   begin
-    title := 'Èeské hrady';
     xmlFile := 'hrady-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZHrady.html';
     pathInfo := 'hrady-cz';
@@ -141,7 +140,6 @@ begin
 
   with puzzleSet[6] do
   begin
-    title := 'Drevené kostolíky Slovenska';
     xmlFile := 'kostely-sk-v2.xml';
     htmlFile := 'GeoPuzzle_SKKostoliky.html';
     pathInfo := 'kostely-sk';
@@ -150,7 +148,6 @@ begin
   
   with puzzleSet[7] do
   begin
-    title := 'Døevìné kostolíky';
     xmlFile := 'kostely-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZKosteliky.html';
     pathInfo := 'kostely-cz';
@@ -159,7 +156,6 @@ begin
   
   with puzzleSet[8] do
   begin
-    title := 'Èeské rozhledny';
     xmlFile := 'rozhledny-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZRozhledny.html';
     pathInfo := 'rozhledny-cz';
@@ -168,7 +164,6 @@ begin
 
   with puzzleSet[9] do
   begin
-    title := 'Hungarian Castles';
     xmlFile := 'hrady-hu-v2.xml';
     htmlFile := 'GeoPuzzle_HUCastles.html';
     pathInfo := 'hrady-hu';
@@ -177,7 +172,6 @@ begin
 
   with puzzleSet[10] do
   begin
-    title := 'Slovenské jaskyne';
     xmlFile := 'jeskyne-sk-v2.xml';
     htmlFile := 'GeoPuzzle_SKJaskyne.html';
     pathInfo := 'jeskyne-sk';
@@ -186,7 +180,6 @@ begin
 
   with puzzleSet[11] do
   begin
-    title := 'European Summits';
     xmlFile := 'summits-v2.xml';
     htmlFile := 'GeoPuzzle_EUSummits.html';
     pathInfo := 'summits';
@@ -195,7 +188,6 @@ begin
   
   with puzzleSet[12] do
   begin
-    title := 'Tatry';
     xmlFile := 'tatry-v2.xml';
     htmlFile := 'GeoPuzzle_SKTatry.html';
     pathInfo := 'tatry';
@@ -204,7 +196,6 @@ begin
   
   with puzzleSet[13] do
   begin
-    title := 'Èeské zámky';
     xmlFile := 'zamky-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZZamky.html';
     pathInfo := 'zamky-cz';
@@ -261,7 +252,7 @@ end;
 
 
 // rozlozi XML subor pre dany puzzle do struktur pre dalsie spracovanie
-function ParsePuzzleXML(filename:String) : TPuzzle;
+procedure ParsePuzzleXML(var puzzle:TPuzzleInfo);
 var 
   Xml : TJclSimpleXML;
   element, subElement :  TJclSimpleXMLElem;
@@ -274,7 +265,7 @@ begin
   // vytvorime XML parser pre dany subor
   Xml := TJclSimpleXML.Create();
   try
-    Xml.loadfromfile(GEOGET_SCRIPTDIR + PLUGIN_DIR + filename, seAuto, 0);
+    Xml.loadfromfile(GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzle.xmlFile, seAuto, 0);
   finally
     //DeleteFile(sFile);
   end;
@@ -287,14 +278,23 @@ begin
   for n := 0 to XML.Root.Items.count - 1 do 
   begin
     element := XML.Root.Items[n];
-    if element.name='cache' then
+	
+	if element.name='name' then
+	begin
+	  puzzle.title := element.Value;
+	end
+	else if element.name='url' then
+	begin
+	  puzzle.puzzleUrl := element.Value;
+	end
+	else if element.name='cache' then
     begin
       // pre pole cacheCodes nastavime dlzku podla mnozstva subelementov
       // ratame ze subelementy budu vzdy jeden <puzzle> a "n" <code"
-      SetLength(Result[fieldIndex].cacheCodes, element.Items.count-1);
+      SetLength(puzzle.data[fieldIndex].cacheCodes, element.Items.count-1);
       
       // nastav found na false
-      Result[fieldIndex].found := false;
+      puzzle.data[fieldIndex].found := false;
       
       codeIndex := 0;
       for j := 0 to element.Items.count - 1 do
@@ -303,13 +303,13 @@ begin
         
         // pre puzzle element vytiahneme len jeho nazov
         if subElement.name='puzzle' then
-          Result[fieldIndex].fieldName := subElement.properties.Value('title', '');
+          puzzle.data[fieldIndex].fieldName := subElement.properties.Value('title', '');
           
         // pre code element, pridame GC kod do pola a inkrementujeme index
         if subElement.name='code' then begin
-          Result[fieldIndex].cacheCodes[codeIndex] := subElement.Value;
+          puzzle.data[fieldIndex].cacheCodes[codeIndex] := subElement.Value;
           gc.LoadByGC(subElement.Value);
-          if (gc.IsFound) or (gc.IsOwner) then Result[fieldIndex].found := true;
+          if (gc.IsFound) or (gc.IsOwner) then puzzle.data[fieldIndex].found := true;
           Inc(codeIndex);
         end;
       end;
@@ -322,38 +322,41 @@ end;
 
 
 // generovanie HTML kodu pre konkretny puzzle
-procedure GeneratePuzzle(puzzle:TPuzzle; output:String; urlDirName:String; backgroundString:String);
+procedure GeneratePuzzle(puzzle:TPuzzleInfo; backgroundString:String);
 var
   htmlout : String;
   i : integer;
   foundGC : integer;
 begin
-  htmlout := '<div style="width: 688px; height: 324px; background: transparent url(http://www.geotrophy.net/content/' + urlDirName + '/background' + backgroundString + '.png) no-repeat 0 0; margin: 10px auto;" >';
+  htmlout := '<div style="width: 688px; height: 324px; background: transparent url(http://www.geotrophy.net/content/' + puzzle.pathInfo + '/background' + backgroundString + '.png) no-repeat 0 0; margin: 10px auto;" >';
   foundGC := 0;
   
   for i := 1 to 35 do
-    if puzzle[i].found = true then begin
+    if puzzle.data[i].found = true then begin
       Inc(foundGC);
-      htmlout := htmlout + '<div style="background: transparent url(http://www.geotrophy.net/content/' + urlDirName + '/' + IntToStr(i) + '.png) no-repeat ' + CalculateXOffset(i) + ' ' + CalculateYOffset(i) + ' ">';
+      htmlout := htmlout + '<div style="background: transparent url(http://www.geotrophy.net/content/' + puzzle.pathInfo + '/' + IntToStr(i) + '.png) no-repeat ' + CalculateXOffset(i) + ' ' + CalculateYOffset(i) + ' ">';
     end;
 
   htmlout := htmlout + '<div style="width: 669px; height: 305px; padding: 19px 0 0 19px;">';
 
   //
   for i := 1 to 35 do
-    htmlout := htmlout + '<div style="float:left; overflow: hidden; width:72px; height: 72px; cursor: help;" title="' + GetEncodedString(puzzle[i].fieldName) + '">&nbsp;</div>';
+    htmlout := htmlout + '<div style="float:left; overflow: hidden; width:72px; height: 72px; cursor: help;" title="' + GetEncodedString(puzzle.data[i].fieldName) + '">&nbsp;</div>';
+	
+  // odkaz na domovsku stranku daneho puzzle
+  htmlout := htmlout + '<a href="' + puzzle.puzzleUrl + '" style="float:left; overflow: hidden; width:72px; height: 72px; cursor: pointer;" title="GeoPuzzle ' + GetEncodedString(puzzle.title) + '">&nbsp;</a>';
 
   htmlout := htmlout + '</div>';
   for i := 1 to foundGC do
     htmlout := htmlout + '</div>';
   htmlout := htmlout + '</div>';
   
-  if FileExists(GEOGET_SCRIPTDIR + PLUGIN_DIR + output) then begin
-    if DeleteFile(GEOGET_SCRIPTDIR + PLUGIN_DIR + output) then
-      StringToFile(htmlout, GEOGET_SCRIPTDIR + PLUGIN_DIR + output);
+  if FileExists(GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzle.htmlFile) then begin
+    if DeleteFile(GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzle.htmlFile) then
+      StringToFile(htmlout, GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzle.htmlFile);
   end
   else
-    StringToFile(htmlout, GEOGET_SCRIPTDIR + PLUGIN_DIR + output);
+    StringToFile(htmlout, GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzle.htmlFile);
 end;
 
 
@@ -362,7 +365,6 @@ procedure PluginStart;
 var
   backgroundIndex : integer;
   i : integer;
-  puzzle : TPuzzle;
 begin
   // inicializacia textoveho potvrdenia
   complete := 'Vaše GeoPuzzles byly úspìšnì vytvoøeny:<br><br>';
@@ -410,14 +412,14 @@ begin
   for i := 1 to Length(puzzleSet) do
   begin
     GeoBusyProgress(i, Length(puzzleSet));
-    GeoBusyKind('Zpracování GeoPuzzle - ' + puzzleSet[i].title);
-
-    complete := complete + '<a href="file://'+ GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzleSet[i].htmlFile + '">' + puzzleSet[i].title + '</a><br>';
+    GeoBusyKind('Zpracování GeoPuzzle'); // - ' + IntToStr(i) + ' z ' + IntToStr(Length(puzzleSet))); //puzzleSet[i].title);
 
     if DownloadPuzzleXML(puzzleSet[i].xmlFile) then
     begin
-      puzzle := ParsePuzzleXML(puzzleSet[i].xmlFile);
-      GeneratePuzzle(puzzle, puzzleSet[i].htmlFile, puzzleSet[i].pathInfo, backgroundGlobal);
+      ParsePuzzleXML(puzzleSet[i]);
+	  GeoBusyKind('Zpracování GeoPuzzle - ' + UtfToAnsi(puzzleSet[i].title));
+      GeneratePuzzle(puzzleSet[i], backgroundGlobal);
+      complete := complete + '<a href="file://'+ GEOGET_SCRIPTDIR + PLUGIN_DIR + puzzleSet[i].htmlFile + '">' + UtfToAnsi(puzzleSet[i].title) + '</a><br>';
     end
     else
       exit;
