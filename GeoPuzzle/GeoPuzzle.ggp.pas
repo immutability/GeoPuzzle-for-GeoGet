@@ -192,19 +192,19 @@ begin
   
   with puzzleSet[12] do
   begin
-    xmlFile := 'tatry-v2.xml';
-    htmlFile := 'GeoPuzzle_SKTatry.html';
-    pathInfo := 'tatry';
-    country := 'SK';
-  end;  
-  
-  with puzzleSet[13] do
-  begin
     xmlFile := 'zamky-cz-v2.xml';
     htmlFile := 'GeoPuzzle_CZZamky.html';
     pathInfo := 'zamky-cz';
     country := 'CZ';
   end;  
+  
+  with puzzleSet[13] do
+  begin
+    xmlFile := 'tatry-v2.xml';
+    htmlFile := 'GeoPuzzle_SKTatry.html';
+    pathInfo := 'tatry';
+    country := 'SK';
+  end;    
 end;
 
 
@@ -399,7 +399,7 @@ var
   i : integer;
 begin
   // inicializacia textoveho potvrdenia
-  complete := 'Vaše GeoPuzzles byly úspìšnì vytvoøeny:<br><br>';
+  complete := 'Vaše GeoPuzzle byly úspìšnì vytvoøeny.<br>';
 
   // kontrola nastavenia pozadia, pouzi "2" ako default
   try
@@ -449,13 +449,16 @@ begin
     cacheDays := 0;
 	
   // zoznam povolenych krajin
-  countryList := COUNTRIES;
+  countryList := UpperCase(COUNTRIES);
   if Length(countryList) = 0 then
   begin
     allCountries := true;
+	complete := complete + '<br>';
   end
-  else 
+  else begin
     allCountries := false;
+	complete := complete + 'Seznam státù: ' + countryList + '<br><br>';
+  end;
     
   InitPuzzleSet();
 

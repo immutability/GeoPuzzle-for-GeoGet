@@ -5,4 +5,4 @@ const
   CACHE_DAYS = '7'; //Kolik dní uchovávat stažené XML soubory, 0 = vždy stáhnout nové
   SHOW_TITLE = '0'; //Pøidat nadpis: 1 - zapnuto, 0 - vypnuto
   SHOW_COUNT = '0'; //Pøidat poèet nalezených: 1 - zapnuto, 0 - vypnuto
-  COUNTRIES = ''; //Kódy krajin oddìlené èárkou, napø CZ,SK nebo prázdná hodnota pro generování všech puzzle
+  COUNTRIES = ''; //Kódy státù oddìlené èárkou: CZ,SK nebo CZ nebo prázdné pole pro generování všech puzzle (možné hodnoty: CZ,SK,HU,EU)
