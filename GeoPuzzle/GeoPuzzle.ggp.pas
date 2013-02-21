@@ -41,7 +41,6 @@ type
     title : String; // nazov puzzle
 	puzzleUrl : String; // adresa stranky pre dany puzzle
 	data : TPuzzle; // data daneho puzzle, ziskane z XML suboru
-	foundCount : Byte; // pocet najdenych
   end;
   
   // sada vsetkych puzzle
@@ -292,9 +291,6 @@ begin
   fieldIndex := 1;
   gc := TGeo.Create();
   
-  // pocet najdenych inicializujeme pre istotu na nulu
-  puzzle.foundCount := 0;
-  
   // prechadzame vsetky XML polozky, zaujimaju nas len <cache> elementy
   for n := 0 to XML.Root.Items.count - 1 do 
   begin
@@ -335,9 +331,6 @@ begin
         end;
       end;
 	  
-	  if(puzzle.data[fieldIndex].found) then
-	    Inc(puzzle.foundCount);
-      
       // na zaver inkrementujeme index pre jednotlive policka
       Inc(fieldIndex);
     end;
@@ -385,7 +378,7 @@ begin
 	
   // pocet nalezov
   if(showCount) then
-    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(puzzle.foundCount) + '</b></div>'; 
+    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(foundGC) + '</b></div>'; 
   
   // zaverecny uzatvaraci div
   htmlout := htmlout + '</div>';
