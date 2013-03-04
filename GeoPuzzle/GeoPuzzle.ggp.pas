@@ -324,8 +324,8 @@ begin
           
         // pre code element, pridame GC kod do pola a inkrementujeme index
         if subElement.name='code' then begin
-          puzzle.data[fieldIndex].cacheCodes[codeIndex] := subElement.Value;
-          gc.LoadByGC(subElement.Value);
+          puzzle.data[fieldIndex].cacheCodes[codeIndex] := Trim(subElement.Value);
+          gc.LoadByGC(Trim(subElement.Value));
           if (gc.IsFound) or (gc.IsOwner) then puzzle.data[fieldIndex].found := true;
           Inc(codeIndex);
         end;
