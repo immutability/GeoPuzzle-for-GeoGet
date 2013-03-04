@@ -41,6 +41,7 @@ type
     title : String; // nazov puzzle
 	puzzleUrl : String; // adresa stranky pre dany puzzle
 	data : TPuzzle; // data daneho puzzle, ziskane z XML suboru
+	foundCount : Byte; // pocet najdenych
   end;
   
   // sada vsetkych puzzle
@@ -291,6 +292,9 @@ begin
   fieldIndex := 1;
   gc := TGeo.Create();
   
+  // pocet najdenych inicializujeme pre istotu na nulu
+  puzzle.foundCount := 0;
+  
   // prechadzame vsetky XML polozky, zaujimaju nas len <cache> elementy
   for n := 0 to XML.Root.Items.count - 1 do 
   begin
@@ -331,6 +335,9 @@ begin
         end;
       end;
 	  
+	  if(puzzle.data[fieldIndex].found) then
+	    Inc(puzzle.foundCount);
+      
       // na zaver inkrementujeme index pre jednotlive policka
       Inc(fieldIndex);
     end;
@@ -343,7 +350,6 @@ procedure GeneratePuzzle(puzzle:TPuzzleInfo; backgroundString:String);
 var
   htmlout : String;
   i : integer;
-  foundGC : integer;
 begin
   htmlout := '';
   
@@ -353,14 +359,12 @@ begin
 
   // pocet nalezov
   if(showCount = 2) then
-    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(foundGC) + '</b></div>'; 
+    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(puzzle.foundCount) + '</b></div>'; 
   
   htmlout := htmlout + '<div style="width: 688px; height: 324px; background: transparent url(http://www.geotrophy.net/content/' + puzzle.pathInfo + '/background' + backgroundString + '.png) no-repeat 0 0; margin: 10px auto;" >';
-  foundGC := 0;
   
   for i := 1 to 35 do
     if puzzle.data[i].found = true then begin
-      Inc(foundGC);
       htmlout := htmlout + '<div style="background: transparent url(http://www.geotrophy.net/content/' + puzzle.pathInfo + '/' + IntToStr(i) + '.png) no-repeat ' + CalculateXOffset(i) + ' ' + CalculateYOffset(i) + ' ">';
     end;
 
@@ -377,12 +381,12 @@ begin
   htmlout := htmlout + '</div>';
   
   // closing divs pre nalezy
-  for i := 1 to foundGC do
+  for i := 1 to puzzle.foundCount do
     htmlout := htmlout + '</div>';
 	
   // pocet nalezov
   if(showCount = 1) then
-    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(foundGC) + '</b></div>'; 
+    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(puzzle.foundCount) + '</b></div>'; 
   
   // zaverecny uzatvaraci div
   htmlout := htmlout + '</div>';
