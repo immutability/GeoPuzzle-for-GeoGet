@@ -52,7 +52,7 @@ var
   useUtfOutput : boolean; // false = ANSI / Windows-1250, true = UTF-8
   cacheDays : double; // kolko dni kym sa nanovo stiahnut XML subory
   showTitle : boolean; // pridavat nadpis?
-  showCount : boolean; // pridavat pocet nalezov?
+  showCount : integer; // pridavat pocet nalezov (0 = nie, 1 = pod, 2 = nad)
   countryList : String; // zoznam povolenych krajin
   allCountries : boolean; // generovat vsetky puzzle
 
@@ -350,6 +350,10 @@ begin
   // titulok
   if(showTitle) then
     htmlout := htmlout + '<h3 style="margin-bottom:0; padding-bottom: 0; text-align:center;">GeoPuzzle ' + GetEncodedString(puzzle.title) + '</h3>';
+
+  // pocet nalezov
+  if(showCount = 2) then
+    htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(foundGC) + '</b></div>'; 
   
   htmlout := htmlout + '<div style="width: 688px; height: 324px; background: transparent url(http://www.geotrophy.net/content/' + puzzle.pathInfo + '/background' + backgroundString + '.png) no-repeat 0 0; margin: 10px auto;" >';
   foundGC := 0;
@@ -377,7 +381,7 @@ begin
     htmlout := htmlout + '</div>';
 	
   // pocet nalezov
-  if(showCount) then
+  if(showCount = 1) then
     htmlout := htmlout + '<div style="font-size:x-small;text-align:center;" >' + GetEncodedSourceString('Poèet nalezených: ') + '<b>' + IntToStr(foundGC) + '</b></div>'; 
   
   // zaverecny uzatvaraci div
@@ -431,13 +435,15 @@ begin
   else
     showTitle := false;
 	
-  // nastavenie poctu nalezov
-  if SHOW_COUNT = '1' then begin
-    showCount := true;
-  end
-  else
-    showCount := false;
-	
+  // nastavenie zobrazovania poctu nalezov
+  try
+	showCount := StrToInt(SHOW_COUNT);
+  except
+    showCount := 0;
+  end;
+  if (showCount < 0) OR (showCount > 2) then 
+	showCount := 0;
+  
   // nastavenie cachovania XML suborov    
   try
     cacheDays := StrToFloat(CACHE_DAYS);
