@@ -45,7 +45,7 @@ type
   end;
   
   // sada vsetkych puzzle
-  TPuzzleSet = Array[1..13] of TPuzzleInfo;
+  TPuzzleSet = Array[1..14] of TPuzzleInfo;
 
 
 var
@@ -205,7 +205,15 @@ begin
     htmlFile := 'GeoPuzzle_SKTatry.html';
     pathInfo := 'tatry';
     country := 'SK';
-  end;    
+  end;
+  
+  with puzzleSet[14] do
+  begin
+    xmlFile := 'rozhledny-sk-v2.xml';
+    htmlFile := 'GeoPuzzle_SKRozhladne.html';
+    pathInfo := 'rozhledny-sk';
+    country := 'SK';
+  end;  
 end;
 
 
