@@ -45,7 +45,7 @@ type
   end;
   
   // sada vsetkych puzzle
-  TPuzzleSet = Array[1..14] of TPuzzleInfo;
+  TPuzzleSet = Array[1..16] of TPuzzleInfo;
 
 
 var
@@ -213,6 +213,22 @@ begin
     htmlFile := 'GeoPuzzle_SKRozhladne.html';
     pathInfo := 'rozhledny-sk';
     country := 'SK';
+  end;  
+  
+  with puzzleSet[15] do
+  begin
+    xmlFile := 'pivovary-cz-v2.xml';
+    htmlFile := 'GeoPuzzle_CZPivovary.html';
+    pathInfo := 'pivovary-cz';
+    country := 'CZ';
+  end;  
+
+  with puzzleSet[16] do
+  begin
+    xmlFile := 'bazalt-v2.xml';
+    htmlFile := 'GeoPuzzle_EUBasalt.html';
+    pathInfo := 'bazalt';
+    country := 'EU';
   end;  
 end;
 
