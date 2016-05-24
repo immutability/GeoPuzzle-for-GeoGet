@@ -105,161 +105,161 @@ procedure InitPuzzleSet;
 begin
   with puzzleSet[1] do
   begin
-    xmlFile := 'kopecky-cz-v2.xml';
+    xmlFile := 'kopecky-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZKopecky.html';
-    pathInfo := 'kopecky-cz';
+    pathInfo := 'kopecky-cz-v2';
     country := 'CZ';
   end;
 
   with puzzleSet[2] do
   begin
-    xmlFile := 'kopecky-sk-v2.xml';
+    xmlFile := 'kopecky-sk-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SKKopceky.html';
-    pathInfo := 'kopecky-sk';
+    pathInfo := 'kopecky-sk-v2';
     country := 'SK';
   end;
   
   with puzzleSet[3] do
   begin
-    xmlFile := 'rekordy-cz-v2.xml';
+    xmlFile := 'rekordy-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZRekordy.html';
-    pathInfo := 'rekordy-cz';
+    pathInfo := 'rekordy-cz-v2';
     country := 'CZ';
   end;
 
   with puzzleSet[4] do
   begin
-    xmlFile := 'hrady-sk-v2.xml';
+    xmlFile := 'hrady-sk-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SKHrady.html';
-    pathInfo := 'hrady-sk';
+    pathInfo := 'hrady-sk-v2';
     country := 'SK';
   end;
   
   with puzzleSet[5] do
   begin
-    xmlFile := 'hrady-cz-v2.xml';
+    xmlFile := 'hrady-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZHrady.html';
-    pathInfo := 'hrady-cz';
+    pathInfo := 'hrady-cz-v2';
     country := 'CZ';
   end;
 
   with puzzleSet[6] do
   begin
-    xmlFile := 'kostely-sk-v2.xml';
+    xmlFile := 'kostely-sk-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SKKostoliky.html';
-    pathInfo := 'kostely-sk';
+    pathInfo := 'kostely-sk-v2';
     country := 'SK';
   end;
   
   with puzzleSet[7] do
   begin
-    xmlFile := 'kostely-cz-v2.xml';
+    xmlFile := 'kostely-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZKosteliky.html';
-    pathInfo := 'kostely-cz';
+    pathInfo := 'kostely-cz-v2';
     country := 'CZ';
   end;
   
   with puzzleSet[8] do
   begin
-    xmlFile := 'rozhledny-cz-v2.xml';
+    xmlFile := 'rozhledny-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZRozhledny.html';
-    pathInfo := 'rozhledny-cz';
+    pathInfo := 'rozhledny-cz-v2';
     country := 'CZ';
   end;
 
   with puzzleSet[9] do
   begin
-    xmlFile := 'hrady-hu-v2.xml';
+    xmlFile := 'hrady-hu-v2-v2.xml';
     htmlFile := 'GeoPuzzle_HUCastles.html';
-    pathInfo := 'hrady-hu';
+    pathInfo := 'hrady-hu-v2';
     country := 'HU';
   end;
 
   with puzzleSet[10] do
   begin
-    xmlFile := 'jeskyne-sk-v2.xml';
+    xmlFile := 'jeskyne-sk-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SKJaskyne.html';
-    pathInfo := 'jeskyne-sk';
+    pathInfo := 'jeskyne-sk-v2';
     country := 'SK';
   end;
 
   with puzzleSet[11] do
   begin
-    xmlFile := 'summits-v2.xml';
+    xmlFile := 'summits-v2-v2.xml';
     htmlFile := 'GeoPuzzle_EUSummits.html';
-    pathInfo := 'summits';
+    pathInfo := 'summits-v2';
     country := 'EU';
   end;
   
   with puzzleSet[12] do
   begin
-    xmlFile := 'zamky-cz-v2.xml';
+    xmlFile := 'zamky-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZZamky.html';
-    pathInfo := 'zamky-cz';
+    pathInfo := 'zamky-cz-v2';
     country := 'CZ';
   end;  
   
   with puzzleSet[13] do
   begin
-    xmlFile := 'tatry-v2.xml';
+    xmlFile := 'tatry-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SKTatry.html';
-    pathInfo := 'tatry';
+    pathInfo := 'tatry-v2';
     country := 'SK';
   end;
   
   with puzzleSet[14] do
   begin
-    xmlFile := 'rozhledny-sk-v2.xml';
+    xmlFile := 'rozhledny-sk-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SKRozhladne.html';
-    pathInfo := 'rozhledny-sk';
+    pathInfo := 'rozhledny-sk-v2';
     country := 'SK';
   end;  
   
   with puzzleSet[15] do
   begin
-    xmlFile := 'pivovary-cz-v2.xml';
+    xmlFile := 'pivovary-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZPivovary.html';
-    pathInfo := 'pivovary-cz';
+    pathInfo := 'pivovary-cz-v2';
     country := 'CZ';
   end;  
 
   with puzzleSet[16] do
   begin
-    xmlFile := 'bazalt-v2.xml';
+    xmlFile := 'bazalt-v2-v2.xml';
     htmlFile := 'GeoPuzzle_EUBasalt.html';
-    pathInfo := 'bazalt';
+    pathInfo := 'bazalt-v2';
     country := 'EU';
   end;  
   
   with puzzleSet[17] do
   begin
-    xmlFile := 'domy-v2.xml';
+    xmlFile := 'domy-cz-v2-v2.xml';
     htmlFile := 'GeoPuzzle_CZRodneDomy.html';
-    pathInfo := 'domy';
+    pathInfo := 'domy-cz-v2';
     country := 'CZ';
   end; 
 
   with puzzleSet[18] do
   begin
-    xmlFile := 'krize-v2.xml';
+    xmlFile := 'krize-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SKKrize.html';
-    pathInfo := 'krize';
+    pathInfo := 'krize-v2';
     country := 'SK';
   end; 
   
   with puzzleSet[19] do
   begin
-    xmlFile := 'unesco-de-v2.xml';
+    xmlFile := 'unesco-de-v2-v2.xml';
     htmlFile := 'GeoPuzzle_DEunesco.html';
-    pathInfo := 'unesco-de';
+    pathInfo := 'unesco-de-v2';
     country := 'DE';
   end; 
 
   with puzzleSet[20] do
   begin
-    xmlFile := 'hrady-si-v2.xml';
+    xmlFile := 'hrady-si-v2-v2.xml';
     htmlFile := 'GeoPuzzle_SICastles.html';
-    pathInfo := 'hrady-si';
+    pathInfo := 'hrady-si-v2';
     country := 'SI';
   end; 
 end;
