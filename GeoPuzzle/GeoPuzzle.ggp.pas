@@ -45,7 +45,7 @@ type
   end;
   
   // sada vsetkych puzzle
-  TPuzzleSet = Array[1..18] of TPuzzleInfo;
+  TPuzzleSet = Array[1..20] of TPuzzleInfo;
 
 
 var
@@ -245,6 +245,22 @@ begin
     htmlFile := 'GeoPuzzle_SKKrize.html';
     pathInfo := 'krize';
     country := 'SK';
+  end; 
+  
+  with puzzleSet[19] do
+  begin
+    xmlFile := 'unesco-de-v2.xml';
+    htmlFile := 'GeoPuzzle_DEunesco.html';
+    pathInfo := 'unesco-de';
+    country := 'DE';
+  end; 
+
+  with puzzleSet[20] do
+  begin
+    xmlFile := 'hrady-si-v2.xml';
+    htmlFile := 'GeoPuzzle_SICastles.html';
+    pathInfo := 'hrady-si';
+    country := 'SI';
   end; 
 end;
 

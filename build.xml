@@ -46,10 +46,17 @@
 		<get src="http://www.geotrophy.net/xml/kostely-sk-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/rekordy-cz-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/rozhledny-cz-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/rozhledny-sk-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/jeskyne-sk-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/summits-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/tatry-v2.xml" dest="data"/>
 		<get src="http://www.geotrophy.net/xml/zamky-cz-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/pivovary-cz-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/bazalt-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/domy-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/krize-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/unesco-de-v2.xml" dest="data"/>
+		<get src="http://www.geotrophy.net/xml/hrady-si-v2.xml" dest="data"/>
 	</target>
 
 	<target name="deploy" description="Copy current plugin files into GeoGet's working scripts directory">
