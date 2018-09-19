@@ -2,9 +2,11 @@
 Autor: osnica / Rado
 http://tiny.cc/osnica
 
+Updates: PJSmith (GC tym PetrAJana) / Petr
+
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 2.0.12 / 2016-05-24
+Verzia: 2.0.13 / 2018-07-18
 }
 
 uses simplexml;
@@ -12,12 +14,12 @@ uses simplexml;
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '2.0.12';
+const VERSION = '2.0.13';
 
 // zakladna URL pre XML subory jednotlivych puzzle
 const BASE_URL = 'http://geotrophy.net/xml/';
 const PLUGIN_DIR = '\GeoPuzzle\';
-
+const TAG_CATEGORY = 'GeoPuzzle';  //category of tags
 
 type
   // jedno policko puzzle
@@ -56,7 +58,9 @@ var
   showCount : integer; // pridavat pocet nalezov (0 = nie, 1 = pod, 2 = nad)
   countryList : String; // zoznam povolenych krajin
   allCountries : boolean; // generovat vsetky puzzle
-
+  tagPuzzle : boolean; // tagovat puzzle?
+  missingGcCodes : TStringList; // chybejici GC code
+  puzzleGcCodes : TStringList; // predchozi GC code
   complete : String; // notifikacia ktora sa zobrazi po ukonceni behu
 
   puzzleSet : TPuzzleSet;
@@ -330,11 +334,11 @@ procedure ParsePuzzleXML(var puzzle:TPuzzleInfo);
 var 
   Xml : TJclSimpleXML;
   element, subElement :  TJclSimpleXMLElem;
-  n : Integer;
-  j : Integer;
+  n,j,i : Integer;
   fieldIndex : Integer;
   codeIndex : Integer;
   gc : TGeo;
+  foundGcCode : String;
 begin
   // vytvorime XML parser pre dany subor
   Xml := TJclSimpleXML.Create();
@@ -369,6 +373,9 @@ begin
       // pre pole cacheCodes nastavime dlzku podla mnozstva subelementov
       // ratame ze subelementy budu vzdy jeden <puzzle> a "n" <code"
       SetLength(puzzle.data[fieldIndex].cacheCodes, element.Items.count-1);
+
+      puzzleGcCodes := TStringList.Create();
+      foundGcCode := '';
       
       // nastav found na false
       puzzle.data[fieldIndex].found := false;
@@ -386,11 +393,38 @@ begin
         if subElement.name='code' then begin
           puzzle.data[fieldIndex].cacheCodes[codeIndex] := Trim(subElement.Value);
           gc.LoadByGC(Trim(subElement.Value));
-          if (gc.IsFound) or (gc.IsOwner) then puzzle.data[fieldIndex].found := true;
-          Inc(codeIndex);
+          if (gc.IsFound) or (gc.IsOwner) then begin puzzle.data[fieldIndex].found := true;
+            Inc(codeIndex);
+
+            foundGcCode := Trim(subElement.Value);
+            puzzleGcCodes.Add(GetEncodedString(Trim(subElement.Value)));
+            puzzle.data[fieldIndex].found := true;
+          end
+          else begin
+              if ((gc.key = 0) and (tagPuzzle = true)) then missingGcCodes.Add(GetEncodedString(Trim(subElement.Value)));
+
+              if (gc.IsArchived = false) then begin
+                puzzleGcCodes.Add(GetEncodedString(Trim(subElement.Value)));
+              end;
+          end;
         end;
       end;
-	  
+
+    if((puzzleGcCodes.Count > 0) and (tagPuzzle = true)) then begin
+      if(foundGcCode = '') then begin
+        foundGcCode := puzzleGcCodes[puzzleGcCodes.Count - 1];
+      end;
+
+      for i := 0 to puzzleGcCodes.Count-1 do begin
+        gc.LoadByGC(puzzleGcCodes[i]);
+
+        if(foundGcCode = puzzleGcCodes[i])  then begin
+          gc.TagAdd(TAG_CATEGORY, puzzle.title);
+        end;
+      end;
+    end;
+
+    if (puzzleGcCodes <> nil) then puzzleGcCodes.Free();
 	  if(puzzle.data[fieldIndex].found) then
 	    Inc(puzzle.foundCount);
       
@@ -525,6 +559,13 @@ begin
     allCountries := false;
 	complete := complete + 'Seznam státù: ' + countryList + '<br><br>';
   end;
+
+  // tagovat puzzle?
+  if TAG_PUZZLE = '1' then begin
+    tagPuzzle := true;
+  end
+  else
+    tagPuzzle := false;
     
   InitPuzzleSet();
 
@@ -533,6 +574,9 @@ begin
   GeoBusyCaption(PluginHint());
   GeoBusyProgress(0, Length(puzzleSet));
   GeoBusyKind('Zpracování GeoPuzzle...');
+
+  missingGcCodes := TStringList.Create();
+  GeoTagDelCategory(TAG_CATEGORY);
   
   for i := 1 to Length(puzzleSet) do
   begin
@@ -563,6 +607,11 @@ end;
 
 procedure PluginStop;
 begin
-  if SILENT = '0' then
+  if SILENT = '0' then begin
     ShowHTMLMessage(PluginCaption(), complete);
+    if (missingGcCodes.Count > 0) then begin
+      ShowHTMLMessage(PluginCaption(), 'Chybejici kese ('+IntToStr(missingGcCodes.Count)+'):<br>' + replacestring(missingGcCodes.CommaText, ',','; '));
+      missingGcCodes.Free();
+    end;
+  end;
 end;
