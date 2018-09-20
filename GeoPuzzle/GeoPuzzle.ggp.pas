@@ -6,7 +6,7 @@ Updates: PJSmith (GC tym PetrAJana) / Petr
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 2.0.13 / 2018-07-18
+Verzia: 2.0.13 / 2018-09-21
 }
 
 uses simplexml;
