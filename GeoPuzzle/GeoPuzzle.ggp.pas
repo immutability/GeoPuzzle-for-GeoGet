@@ -610,7 +610,7 @@ begin
   if SILENT = '0' then begin
     ShowHTMLMessage(PluginCaption(), complete);
     if (missingGcCodes.Count > 0) then begin
-      ShowHTMLMessage(PluginCaption(), 'Chybejici kese ('+IntToStr(missingGcCodes.Count)+'):<br>' + replacestring(missingGcCodes.CommaText, ',','; '));
+      ShowHTMLMessage(PluginCaption(), 'Chybìjící keše ('+IntToStr(missingGcCodes.Count)+'):<br>' + replacestring(missingGcCodes.CommaText, ',','; '));
       missingGcCodes.Free();
     end;
   end;
