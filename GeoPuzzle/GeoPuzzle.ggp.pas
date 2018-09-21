@@ -401,7 +401,7 @@ begin
             puzzle.data[fieldIndex].found := true;
           end
           else begin
-              if ((gc.key = 0) and (tagPuzzle = true)) then missingGcCodes.Add(GetEncodedString(Trim(subElement.Value)));
+              if ((gc.key = 0) and (tagPuzzle = true) and (SILENT = '0')) then missingGcCodes.Add(GetEncodedString(Trim(subElement.Value)));
 
               if (gc.IsArchived = false) then begin
                 puzzleGcCodes.Add(GetEncodedString(Trim(subElement.Value)));
@@ -611,7 +611,7 @@ begin
     ShowHTMLMessage(PluginCaption(), complete);
     if (missingGcCodes.Count > 0) then begin
       ShowHTMLMessage(PluginCaption(), 'Chybìjící keše ('+IntToStr(missingGcCodes.Count)+'):<br>' + replacestring(missingGcCodes.CommaText, ',','; '));
-      missingGcCodes.Free();
     end;
+    missingGcCodes.Free();
   end;
 end;
