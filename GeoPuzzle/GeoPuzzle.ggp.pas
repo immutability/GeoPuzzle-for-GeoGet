@@ -418,7 +418,7 @@ begin
       for i := 0 to puzzleGcCodes.Count-1 do begin
         gc.LoadByGC(puzzleGcCodes[i]);
 
-        if(foundGcCode = puzzleGcCodes[i])  then begin
+        if((foundGcCode = puzzleGcCodes[i]) and (gc.key <> 0) and (Pos(puzzle.title, gc.TagValues(TAG_CATEGORY)) = 0)) then begin
           gc.TagAdd(TAG_CATEGORY, puzzle.title);
         end;
       end;
@@ -576,7 +576,6 @@ begin
   GeoBusyKind('Zpracování GeoPuzzle...');
 
   missingGcCodes := TStringList.Create();
-  GeoTagDelCategory(TAG_CATEGORY);
   
   for i := 1 to Length(puzzleSet) do
   begin
