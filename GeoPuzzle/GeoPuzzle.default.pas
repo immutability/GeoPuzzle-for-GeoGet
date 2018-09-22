@@ -6,4 +6,4 @@ const
   SHOW_TITLE = '0'; //Pøidat nadpis: 1 - zapnuto, 0 - vypnuto
   SHOW_COUNT = '0'; //Pøidat poèet nalezených: 0 - vypnuto, 1 - pod puzzle, 2 - nad puzzle
   COUNTRIES = ''; //Kódy státù oddìlené èárkou: CZ,SK nebo CZ nebo prázdné pole pro generování všech puzzle (možné hodnoty: CZ,SK,HU,EU)
-  TAG_PUZZLE = '1'; //Tagovat Puzzle do tagu (1 - zapnuto, 0 - vypnuto)
+  TAG_PUZZLE = '1'; //Tagovat Puzzle do tagu: 1 - zapnuto, 0 - vypnuto
