@@ -3,9 +3,9 @@
 	<taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"/>
 
 	<property file="build.properties"/>
+	<property file="version.properties"/>
 
 	<property name="plugin.name"      value="GeoPuzzle"/>
-	<property name="plugin.version"   value="2.0.13"/>
 	<stringutil string="${plugin.name}" property="plugin.filename">
 		<lowercase/>
 	</stringutil>
