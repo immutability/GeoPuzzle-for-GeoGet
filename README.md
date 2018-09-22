@@ -17,7 +17,7 @@ This plugin automatically generates the HTML code for GeoPuzzles, designed by Ge
 The build process is automated using Apache Ant. A sample build.properties file is included if you'd like to use the deploy target. 
 
 The following targets are available:
- - **package (default):** Creates a new production GIP package for GeoGet with proper file naming scheme (including version number) to be uploaded to GeoGet plugin repository.
+ - **package (default):** Creates a new production GIP package for GeoGet with proper file naming scheme (including version number) to be uploaded to GeoGet plugin repository. Depends on the *versions* target.
  - **versions:** Updates the plugin version in all applicable source files. The version should never be updated directly - this target is supposed to handle this.
  - **deploy:** Copies the current plugin files into the GeoGet scripts directory for easier testing. GeoGet will pick up the fresh version of the script file with each plugin run, so when debugging, you can just deploy as many times as you wish while GeoGet is running (no need to restart the app).
  - **getdata:** Downloads the GeoPuzzle XML files from geotrophy.net to the data directory. These data files are not a part of the plugin package itself, but may be needed for troubleshooting/development, and this target allows you to get fresh copies in a single click.
