@@ -2,7 +2,9 @@
 Autor: osnica / Rado
 http://tiny.cc/osnica
 
-Updates: PJSmith (GC tym PetrAJana) / Petr
+Contributors: 
+- PJSmith (GC tym PetrAJana) / Petr - automatic tags
+- Gord - memory leak fix
 
 GeoPuzzle, http://geotrophy.net
 
@@ -432,6 +434,8 @@ begin
       Inc(fieldIndex);
     end;
   end;
+  if(Xml<>nil) then Xml.Free();
+  if(gc<>nil) then gc.Free();
 end;
 
 
@@ -576,7 +580,7 @@ begin
   GeoBusyKind('Zpracování GeoPuzzle...');
 
   missingGcCodes := TStringList.Create();
-  
+
   for i := 1 to Length(puzzleSet) do
   begin
     GeoBusyProgress(i, Length(puzzleSet));
@@ -611,6 +615,6 @@ begin
     if (missingGcCodes.Count > 0) then begin
       ShowHTMLMessage(PluginCaption(), 'Chybìjící keše ('+IntToStr(missingGcCodes.Count)+'):<br>' + replacestring(missingGcCodes.CommaText, ',','; '));
     end;
-    missingGcCodes.Free();
   end;
+  if(missingGcCodes<>nil) then missingGcCodes.Free();
 end;
