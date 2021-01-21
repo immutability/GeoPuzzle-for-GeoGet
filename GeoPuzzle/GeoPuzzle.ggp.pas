@@ -6,7 +6,7 @@ Updates: PJSmith (GC tym PetrAJana) / Petr
 
 GeoPuzzle, http://geotrophy.net
 
-Verzia: 2.1.0 / 2018-09-22
+Verzia: 2.1.1 / 2021-01-21
 }
 
 uses simplexml;
@@ -14,7 +14,7 @@ uses simplexml;
 {$I GeoPuzzle.config.pas}
 
 // verziu needitovat rucne! je automaticky aktualizovana cez ant
-const VERSION = '2.1.0';
+const VERSION = '2.1.1';
 
 // zakladna URL pre XML subory jednotlivych puzzle
 const BASE_URL = 'http://geotrophy.net/xml/';
